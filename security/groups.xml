@@ -34,7 +34,7 @@
     <record id="group_hub_manager" model="res.groups">
         <field name="name">Directeur Général</field>
         <field name="category_id" ref="module_category_hub_project"/>
-        <field name="implied_ids" eval="[(4, ref('hub_project.group_chief_project')),(4, ref('hub_project.group_hub_pmo')),(4, ref('hub_project.group_hub_dsd'))]"/>
+        <field name="implied_ids" eval="[(4, ref('hub_project.group_daf')),(4, ref('hub_project.group_hub_pmo')),(4, ref('hub_project.group_hub_dsd'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
