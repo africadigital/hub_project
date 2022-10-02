@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_user_hub_project,hub.project,model_hub_project,hub_project.group_hub_project_user,1,1,1,1
+access_hub_employee_line,hub.employee.line,model_hub_employee_line,hub_project.group_hub_project_user,1,1,1,1
+access_hub_materials_line,hub.materials.line,model_hub_materials_line,hub_project.group_hub_project_user,1,1,1,1
+access_hub_supply_line,hub.supply.line,model_hub_supply_line,hub_project.group_hub_project_user,1,1,1,1
+access_hub_worksite,hub.worksite,model_hub_worksite,hub_project.group_hub_project_user,1,1,1,1
+access_hub_locality,hub.locality,model_hub_locality,hub_project.group_hub_project_user,1,1,1,1
+access_hub_validator_pmo,hub.pmo,model_hub_validator,hub_project.group_hub_pmo,1,1,1,0
+access_hub_validator_dsd,hub.dsd,model_hub_validator,hub_project.group_hub_dsd,1,1,1,1
+access_hub_refus_reason,hub.refus,model_hub_project_refuse_wizard,hub_project.group_hub_project_user,1,1,1,1

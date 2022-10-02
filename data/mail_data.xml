@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--====================================
+  # TEMPLATE MAIL EXPENSE
+========================================-->
+    <data>
+        <!--=======STATE DRAFT SEND EMAIL=========-->
+        <record id="email_template_chief" model="mail.template">
+            <field name="name">Fiche projet: Validation chef de projet</field>
+            <field name="model_id" ref="hub_project.model_hub_project"/>
+            <field name="subject">Fiche projet {{object.name}} en attente de validation</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.project_manager_id.login or ""}}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+        <tbody>
+            <!-- HEADER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle">
+                            <span style="font-size: 10px;">Fiche de projet HUB</span><br/>
+                            <span>Fiche N°</span><span style="font-size: 20px; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                        </td>
+                        <td valign="middle" align="right">
+                            <img t-attf-src="/logo.png?company={{ object.company_id.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="object.company_id.name"/>
+                        </td></tr>
+                        <tr><td colspan="2" style="text-align:center;">
+                          <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                Cher <t t-out="object.project_manager_id.name or ''" contenteditable="false" data-oe-t-inline="true"/>,<br/><br/>
+                                <p>
+                                    La fiche de projet N° <span style="color:#ce1131; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                                    du projet <strong t-out="object.project_id.name or ''" contenteditable="false" data-oe-t-inline="true"/> est en attente de votre validation.
+                                </p>
+
+                                <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0" data-oe-t-group-active="true">
+                                    <a t-att-href="ctx.get('action_url')" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">Valider maintenant</a>
+                                </div>
+                                <br/>Cordialement,<br/>
+
+                            </div>
+                        </td></tr>
+                        <tr><td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle" align="left">
+                            <t t-out="object.company_id.name or ''" contenteditable="false" data-oe-t-inline="true">HUB</t>
+                        </td></tr>
+                        <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                            <t t-out="object.company_id.phone or ''" contenteditable="false" data-oe-t-inline="true"/>
+                            <t t-if="object.company_id.email" data-oe-t-group="2" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'mailto:%s' % {{ object.company_id.email }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email or ''" contenteditable="false"/>
+                            </t>
+                            <t t-if="object.company_id.website" data-oe-t-group="3" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'%s' % {{ object.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.website or ''" contenteditable="false"/>
+                            </t>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+            </field>
+        </record>
+
+        <!--=======STATE PROJECT SEND EMAIL=========-->
+        <record id="email_template_pmo" model="mail.template">
+            <field name="name">Fiche projet: Validation PMO</field>
+            <field name="model_id" ref="hub_project.model_hub_project"/>
+            <field name="subject">Fiche projet {{object.name}} en attente de validation</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.hub_pmo_id.login or ""}}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+        <tbody>
+            <!-- HEADER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle">
+                            <span style="font-size: 10px;">Fiche de projet HUB</span><br/>
+                            <span>Fiche N°</span><span style="font-size: 20px; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                        </td>
+                        <td valign="middle" align="right">
+                            <img t-attf-src="/logo.png?company={{ object.company_id.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="object.company_id.name"/>
+                        </td></tr>
+                        <tr><td colspan="2" style="text-align:center;">
+                          <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                Cher <t t-out="object.hub_pmo_id.name or ''" contenteditable="false" data-oe-t-inline="true"/>,<br/><br/>
+                                <p>
+                                    La fiche de projet N° <span style="color:#ce1131; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                                    du projet <strong t-out="object.project_id.name or ''" contenteditable="false" data-oe-t-inline="true"/> est en attente de votre validation.
+                                </p>
+
+                                <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0" data-oe-t-group-active="true">
+                                    <a t-att-href="ctx.get('action_url')" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">Valider maintenant</a>
+                                </div>
+                                <br/>Cordialement,<br/>
+
+                            </div>
+                        </td></tr>
+                        <tr><td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle" align="left">
+                            <t t-out="object.company_id.name or ''" contenteditable="false" data-oe-t-inline="true">HUB</t>
+                        </td></tr>
+                        <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                            <t t-out="object.company_id.phone or ''" contenteditable="false" data-oe-t-inline="true"/>
+                            <t t-if="object.company_id.email" data-oe-t-group="2" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'mailto:%s' % {{ object.company_id.email }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email or ''" contenteditable="false"/>
+                            </t>
+                            <t t-if="object.company_id.website" data-oe-t-group="3" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'%s' % {{ object.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.website or ''" contenteditable="false"/>
+                            </t>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+            </field>
+        </record>
+
+         <!--=======STATE PMO SEND EMAIL=========-->
+        <record id="email_template_dsd" model="mail.template">
+            <field name="name">Fiche projet: Validation DSD</field>
+            <field name="model_id" ref="hub_project.model_hub_project"/>
+            <field name="subject">Fiche projet {{object.name}} en attente de validation</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.hub_dsd_id.login or ""}}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+        <tbody>
+            <!-- HEADER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle">
+                            <span style="font-size: 10px;">Fiche de projet HUB</span><br/>
+                            <span>Fiche N°</span><span style="font-size: 20px; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                        </td>
+                        <td valign="middle" align="right">
+                            <img t-attf-src="/logo.png?company={{ object.company_id.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="object.company_id.name"/>
+                        </td></tr>
+                        <tr><td colspan="2" style="text-align:center;">
+                          <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                Cher <t t-out="object.hub_dsd_id.name or ''" contenteditable="false" data-oe-t-inline="true"/>,<br/><br/>
+                                <p>
+                                    La fiche de projet N° <span style="color:#ce1131; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                                    du projet <strong t-out="object.project_id.name or ''" contenteditable="false" data-oe-t-inline="true"/> est en attente de votre validation.
+                                </p>
+
+                                <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0" data-oe-t-group-active="true">
+                                    <a t-att-href="ctx.get('action_url')" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">Valider maintenant</a>
+                                </div>
+                                <br/>Cordialement,<br/>
+
+                            </div>
+                        </td></tr>
+                        <tr><td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle" align="left">
+                            <t t-out="object.company_id.name or ''" contenteditable="false" data-oe-t-inline="true">HUB</t>
+                        </td></tr>
+                        <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                            <t t-out="object.company_id.phone or ''" contenteditable="false" data-oe-t-inline="true"/>
+                            <t t-if="object.company_id.email" data-oe-t-group="2" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'mailto:%s' % {{ object.company_id.email }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email or ''" contenteditable="false"/>
+                            </t>
+                            <t t-if="object.company_id.website" data-oe-t-group="3" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'%s' % {{ object.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.website or ''" contenteditable="false"/>
+                            </t>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+            </field>
+        </record>
+
+
+         <!--=======STATE DSD SEND EMAIL=========-->
+        <record id="email_template_dg" model="mail.template">
+            <field name="name">Fiche projet: Approbation DG</field>
+            <field name="model_id" ref="hub_project.model_hub_project"/>
+            <field name="subject">Fiche projet {{object.name}} en attente d'approbation</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.hub_manager_id.login or ""}}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+        <tbody>
+            <!-- HEADER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle">
+                            <span style="font-size: 10px;">Fiche de projet HUB</span><br/>
+                            <span>Fiche N°</span><span style="font-size: 20px; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                        </td>
+                        <td valign="middle" align="right">
+                            <img t-attf-src="/logo.png?company={{ object.company_id.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="object.company_id.name"/>
+                        </td></tr>
+                        <tr><td colspan="2" style="text-align:center;">
+                          <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                Cher <t t-out="object.hub_manager_id.name or ''" contenteditable="false" data-oe-t-inline="true"/>,<br/><br/>
+                                <p>
+                                    La fiche de projet N° <span style="color:#ce1131; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                                    du projet <strong t-out="object.project_id.name or ''" contenteditable="false" data-oe-t-inline="true"/> est en attente de votre approbation.
+                                </p>
+
+                                <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0" data-oe-t-group-active="true">
+                                    <a t-att-href="ctx.get('action_url')" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">Approuver maintenant</a>
+                                </div>
+                                <br/>Cordialement,<br/>
+
+                            </div>
+                        </td></tr>
+                        <tr><td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle" align="left">
+                            <t t-out="object.company_id.name or ''" contenteditable="false" data-oe-t-inline="true">HUB</t>
+                        </td></tr>
+                        <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                            <t t-out="object.company_id.phone or ''" contenteditable="false" data-oe-t-inline="true"/>
+                            <t t-if="object.company_id.email" data-oe-t-group="2" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'mailto:%s' % {{ object.company_id.email }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email or ''" contenteditable="false"/>
+                            </t>
+                            <t t-if="object.company_id.website" data-oe-t-group="3" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'%s' % {{ object.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.website or ''" contenteditable="false"/>
+                            </t>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+            </field>
+        </record>
+
+
+         <!--=======STATE DSD SEND EMAIL=========-->
+        <record id="email_template_applicant" model="mail.template">
+            <field name="name">Fiche projet: Approuver par la Direction</field>
+            <field name="model_id" ref="hub_project.model_hub_project"/>
+            <field name="subject">Votre Fiche de projet {{object.name}} a été approuvé</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.create_uid.login or ""}}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+        <tbody>
+            <!-- HEADER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle">
+                            <span style="font-size: 10px;">Fiche de projet HUB</span><br/>
+                            <span>Fiche N°</span><span style="font-size: 20px; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                        </td>
+                        <td valign="middle" align="right">
+                            <img t-attf-src="/logo.png?company={{ object.company_id.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="object.company_id.name"/>
+                        </td></tr>
+                        <tr><td colspan="2" style="text-align:center;">
+                          <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <h1>
+                                    <img alt="Okay" src="/hub_project/static/description/rating.png" />
+                                    Bonne nouvelle !
+                                </h1><br/>
+                                Cher <t t-out="object.create_uid.name or ''" contenteditable="false" data-oe-t-inline="true"/>,<br/><br/>
+                                <p>
+                                    La fiche de projet N° <span style="color:#ce1131; font-weight: bold;" t-out="object.name or ''" contenteditable="false"/>
+                                    du projet <strong t-out="object.project_id.name or ''" contenteditable="false" data-oe-t-inline="true"/> a été approuvé par la direction générale.
+                                </p>
+
+                                <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0" data-oe-t-group-active="true">
+                                    <a t-att-href="ctx.get('action_url')" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">Approuver maintenant</a>
+                                </div>
+                                <br/>Cordialement,<br/>
+
+                            </div>
+                        </td></tr>
+                        <tr><td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" contenteditable="false"/>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tbody><tr><td valign="middle" align="left">
+                            <t t-out="object.company_id.name or ''" contenteditable="false" data-oe-t-inline="true">HUB</t>
+                        </td></tr>
+                        <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                            <t t-out="object.company_id.phone or ''" contenteditable="false" data-oe-t-inline="true"/>
+                            <t t-if="object.company_id.email" data-oe-t-group="2" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'mailto:%s' % {{ object.company_id.email }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email or ''" contenteditable="false"/>
+                            </t>
+                            <t t-if="object.company_id.website" data-oe-t-group="3" data-oe-t-group-active="true" data-oe-t-inline="true">
+                                | <a t-attf-href="'%s' % {{ object.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.company_id.website or ''" contenteditable="false"/>
+                            </t>
+                        </td></tr>
+                    </tbody></table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+            </field>
+        </record>
+
+
+<!--=====================================
+     ACTIVITY ACTION
+==========================================-->
+
+
+        <!-- Email Templates -->
+        <template id="template_refuse_reason">
+            <p>Votre fiche projet <strong>N°<t t-esc="name"/></strong> a été refusé</p>
+            <ul class="o_timeline_tracking_value_list">
+                <li>Motif : <t t-esc="reason"/></li>
+            </ul>
+        </template>
+
+    </data>
+</odoo>

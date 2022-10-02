@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="hub_project_form_view" model="ir.ui.view">
+            <field name="name">hub_project.form</field>
+            <field name="model">hub.project</field>
+            <field name="arch" type="xml">
+                <form string="Fiche Projet">
+                    <header>
+                        <button name="action_submit" string="Soumettre" icon="fa-send" class="oe_highlight" states="draft" type="object"/>
+                        <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="project" type="object" groups="hub_project.group_chief_project"/>
+                        <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="pmo_state" type="object" groups="hub_project.group_hub_pmo"/>
+                        <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="dsd_state" type="object" groups="hub_project.group_hub_dsd"/>
+                        <button name="action_submit" string="Approuver" icon="fa-check-circle" class="oe_highlight" states="dg_state" type="object" groups="hub_project.group_hub_manager"/>
+                        <button name="action_draft" string="Mettre en brouillon" class="oe_highlight" states="cancel" type="object"/>
+                        <button name="%(hub_project.refuse_wizard_action)d" states="project,pmo_state,dsd_state,dg_state"  string="Refuser" type="action" groups="hub_project.group_chief_project,ub_project.group_hub_pmo,hub_project.group_hub_dsd,hub_project.group_hub_manager" data-hotkey="x" />
+
+                        <field name="state" statusbar_visible="draft,project,pmo_state,dsd_state,dg_state,done" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" icon="fa-money">
+                                <div class="o_stat_info">
+                                     <span class="o_stat_text"> Total Général</span>
+                                    <field name="amount_total" class="o_stat_value"/>
+                                </div>
+                            </button>
+                        </div><br/>
+
+                        <div class="oe_title" name="title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Fiche projet"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Description du Projet">
+                                <field name="project_id"/>
+                                <field name="partner_id"/>
+                                <field name="analytic_account_id" invisible="0"/>
+                                <field name="project_manager_id"/>
+                                <field name="supervisor_id"/>
+                                <field name="locality_id"/>
+                                <field name="worksite_id"/>
+                            </group>
+                            <group string="Periode Projet">
+                                <label for="date_start" string="Periode"/>
+                                <div>
+                                    <field name="date_start" class="oe_inline"/>
+                                    <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon" title="Arrow"/>
+                                    <field name="date_end" class="oe_inline"/>
+                                </div>
+                                <field name="date"/>
+                                <field name="budget_id"/>
+                                 <field name="create_date" string="Date création"/>
+                                 <field name="company_id" string="Societé" invisible="0"/>
+                                 <field name="currency_id" string="Devise" invisible="1"/>
+                                 <field name="url" invisible="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Infos supplementaires">
+                                <field name="ticket"/>
+                                <field name="code"/>
+                                <field name="zone"/>
+                                <field name="operation"/>
+                            </group>
+                            <group string="Motif">
+                                <field name="motif"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Personnel Intervenants">
+                                <field name="employee_ids" no_label="1">
+                                    <tree editable="bottom">
+                                        <field name="employee_id"/>
+                                        <field name="job_id"/>
+                                         <field name="company_id" string="Societé" invisible="1"/>
+                                        <field name="currency_id" string="Devise" invisible="1"/>
+                                        <field name="qty"/>
+                                        <field name="price" widget="Monetary"/>
+                                        <field name="subtotal" widget="Monetary"/>
+                                    </tree>
+                                </field>
+                                   <div class="pull-right">
+                                       <hr/>
+                                        <label for="amount_total_prime" string="Total Prime :"/>
+                                        <field name="amount_total_prime" widget="Monetary"/>
+                                    </div>
+                            </page>
+                            <page string="Besoins en Materiels">
+                                <field name="materials_ids" no_label="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                         <field name="company_id" string="Societé" invisible="1"/>
+                                        <field name="currency_id" string="Devise" invisible="1"/>
+                                        <field name="qty"/>
+                                        <field name="price" widget="Monetary"/>
+                                        <field name="subtotal" widget="Monetary"/>
+                                    </tree>
+                                </field>
+                                <div class="pull-right">
+                                       <hr/>
+                                        <label for="amount_total_materials" string="Total Besoin Matériel :"/>
+                                        <field name="amount_total_materials" widget="Monetary"/>
+                                    </div>
+                            </page>
+                            <page string="Fournitures Exterieures Divers">
+                                <field name="supply_ids" no_label="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                         <field name="company_id" string="Societé" invisible="1"/>
+                                        <field name="currency_id" string="Devise" invisible="1"/>
+                                        <field name="qty"/>
+                                        <field name="price" widget="Monetary"/>
+                                        <field name="subtotal" widget="Monetary"/>
+                                    </tree>
+                                </field>
+                                <div class="pull-right">
+                                    <hr/>
+                                    <label for="amount_total_supply" string="Total Fourniture exterieures :"/>
+                                    <field name="amount_total_supply" widget="Monetary"/>
+                                </div>
+                            </page>
+                            <page string="Validateurs">
+                                <group>
+                                    <group string="Validation chef de projet">
+                                        <field name="hub_chief_projet_id"/>
+                                        <field name="date_chief"/>
+                                    </group>
+                                    <group string="Validation PMO">
+                                        <field name="hub_pmo_id"/>
+                                        <field name="date_pmo"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Validation DSD">
+                                        <field name="hub_dsd_id"/>
+                                        <field name="date_dsd"/>
+                                    </group>
+                                    <group string="Approbation Direction Générale">
+                                        <field name="hub_manager_id"/>
+                                        <field name="date_manager"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Observations">
+                                <field name="observation" widget="html"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hub_project_tree_view" model="ir.ui.view">
+            <field name="name">hub_project.tree</field>
+            <field name="model">hub.project</field>
+            <field name="arch" type="xml">
+                <tree string="ModelTitle">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="partner_id"/>
+                    <field name="project_manager_id"/>
+                    <field name="date"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="amount_total_prime" optional="show" />
+                    <field name="amount_total_materials" optional="show" />
+                    <field name="amount_total_supply" optional="show" />
+                    <field name="amount_total" optional="show" />
+                    <field name="zone" optional="hide"/>
+                    <field name="locality_id" optional="hide"/>
+                    <field name="state" widget="badge" decoration-success="state == 'done'" decoration-primary="state == 'pmo'" decoration-danger="state == 'dsd'" decoration-info="state == 'project'"/>
+
+                </tree>
+            </field>
+        </record>
+
+<!--        <record id="hub_project_calendar_view" model="ir.ui.view">-->
+<!--            <field name="name">ProjectName.hub_project.calendar</field>-->
+<!--            <field name="model">ProjectName.hub_project</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <calendar string="ModelTitle" date_start="example_date_field" color="example_boolean_field">-->
+<!--                    <field name="example_field"/>-->
+<!--                    <field name="example_field" widget="monetary"/>-->
+<!--                </calendar>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="hub_project_graph_view" model="ir.ui.view">-->
+<!--            <field name="name">ProjectName.hub_project.graph</field>-->
+<!--            <field name="model">ProjectName.hub_project</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <graph string="ModelTitle">-->
+<!--                    <field name="example_field"/>-->
+<!--                    <field name="example_field" type="measure"/>-->
+<!--                </graph>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="hub_project_pivot_view" model="ir.ui.view">
+            <field name="name">hub.project.pivot</field>
+            <field name="model">hub.project</field>
+            <field name="arch" type="xml">
+                <pivot string="ModelTitle">
+                    <field name="date" type="row"/>
+                    <field name="project_id" type="row"/>
+                    <field name="amount_total" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="hub_project_search_view" model="ir.ui.view">
+            <field name="name">hub.project.search</field>
+            <field name="model">hub.project</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <group expand="1" string="Group By">
+                        <filter string="Client" name="partners" context="{'group_by':'partner_id'}"/>
+                        <filter string="Projet" name="projects" context="{'group_by':'project_id'}"/>
+                        <filter string="Date Etablissement" name="date" context="{'group_by':'date'}"/>
+                        <filter string="Etat" name="states" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="hub_project_kanban_view" model="ir.ui.view">
+            <field name="name">hub.project.kanban</field>
+            <field name="model">hub.project</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors" create="0" sample="1">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="project_id"/>
+                    <field name="date"/>
+                    <field name="amount_total"/>
+                    <field name="project_manager_id"/>
+                    <field name="worksite_id"/>
+                    <field name="locality_id"/>
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class=" oe_kanban_global_click o_has_icon oe_kanban_content oe_kanban_card">
+                                <div class="o_project_kanban_main ">
+                                    <div class="o_kanban_card_content mw-100">
+                                        <div class="o_kanban_primary_left">
+                                            <div class="o_primary">
+                                                <span class="o_text_overflow"><t t-esc="record.name.value"/></span>
+                                                <span class="o_text_overflow text-muted" t-if="record.partner_id.value">
+                                                    <span class="fa fa-user mr-2" aria-label="Client" title="Client"/><t t-esc="record.partner_id.value"/>
+                                                </span>
+                                                <div t-if="record.date.raw_value or record.date_start.raw_value" class="text-muted o_row">
+                                                    <span class="fa fa-clock-o mr-2" title="Date"/><field name="date"/>
+                                                    <i t-if="record.date.raw_value" class="fa fa-long-arrow-right mx-2 oe_read_only" aria-label="Arrow icon" title="Arrow"/>
+                                                    <field name="project_id"/>
+                                                </div>
+                                                <div>
+                                                    <field name="state" widget="badge" decoration-success="state == 'done'" decoration-primary="state == 'pmo'" decoration-danger="state == 'dsd'" decoration-info="state == 'project'"/>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="o_kanban_record_bottom mt-3">
+                                    <div class="oe_kanban_bottom_left">
+                                        <div class="o_project_kanban_boxes">
+                                            <span class="o_project_kanban_box">
+                                                <div>
+                                                    <span class="o_value"><t t-esc="record.amount_total.value"/> CFA</span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="project_manager_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+
+            </field>
+        </record>
+
+
+        <record id="hub_project_act_window" model="ir.actions.act_window">
+            <field name="name">Fiche projet</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hub.project</field>
+            <field name="view_mode">tree,form,kanban,pivot</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Gestion de la fiche projet
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="hub_project_root" name="Fiche de projet" web_icon="hub_project,static/description/icon.png"/>
+        <menuitem id="hub_project_category" name="Fiche projet" parent="hub_project_root" sequence="1"/>
+            <menuitem id="hub_project_menu" parent="hub_project_category" action="hub_project_act_window" sequence="1"/>
+
+
+        <record id="worksite_hub_project_tree_view" model="ir.ui.view">
+            <field name="name">Chantier</field>
+            <field name="model">hub.worksite</field>
+            <field name="arch" type="xml">
+                <tree string="Chantier" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="locality_hub_project_tree_view" model="ir.ui.view">
+            <field name="name">Localité</field>
+            <field name="model">hub.locality</field>
+            <field name="arch" type="xml">
+                <tree string="Localite" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="worksite_act_window" model="ir.actions.act_window">
+            <field name="name">Chantier</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hub.worksite</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Creer votre 1er chantier pour la fiche projet
+                </p>
+            </field>
+        </record>
+
+        <record id="locality_act_window" model="ir.actions.act_window">
+            <field name="name">Localité</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hub.worksite</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Creer votre 1ere localite pour la fiche projet
+                </p>
+            </field>
+        </record>
+
+        <record id="validator_hub_project_tree_view" model="ir.ui.view">
+            <field name="name">Validator</field>
+            <field name="model">hub.validator</field>
+            <field name="arch" type="xml">
+                <tree string="Validateurs" editable="bottom">
+                    <field name="user_id" string="Validateur"/>
+                    <field name="type"/>
+                    <field name="email" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="validators_act_window" model="ir.actions.act_window">
+            <field name="name">Validateurs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hub.validator</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Creer votre liste 1ere liste de validateurs pour la fiche projet
+                </p>
+            </field>
+        </record>
+
+         <!-- This Menu Item Must have a parent -->
+        <menuitem id="hub_project_config" name="Configuration" parent="hub_project_root" sequence="4"/>
+            <menuitem id="worksite_menu" parent="hub_project_config" action="worksite_act_window" sequence="1"/>
+            <menuitem id="locality_menu" parent="hub_project_config" action="locality_act_window" sequence="2"/>
+            <menuitem id="validator_menu" parent="hub_project_config" action="validators_act_window" sequence="3"/>
+
+        <record id="projects_hub_project_act_window" model="ir.actions.act_window">
+            <field name="name">Fiche projet</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hub.project</field>
+            <field name="view_mode">kanban</field>
+        </record>
+        <menuitem id="projects_hub_project" parent="project.menu_main_pm" action="projects_hub_project_act_window" sequence="3"/>
+
+
+    </data>
+</odoo>

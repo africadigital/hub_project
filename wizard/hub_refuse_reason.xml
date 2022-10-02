@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hub_refuse_wizard_view_form" model="ir.ui.view">
+        <field name="name">hub.project.refuse.wizard.form</field>
+        <field name="model">hub.project.refuse.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Hub Project refuse reason">
+                <separator string="Motif du refus de la fiche projet"/>
+                <field name="hub_project_id" invisible="1"/>
+                <field name="reason"/>
+                <footer>
+                    <button string='Refuser' name="hub_refuse_reason" type="object" class="oe_highlight" data-hotkey="q"/>
+                    <button string="Annulé" class="oe_link" special="cancel" data-hotkey="z"/>
+                </footer>
+           </form>
+        </field>
+    </record>
+
+    <record id="refuse_wizard_action" model="ir.actions.act_window">
+        <field name="name">Refuser la fiche projet</field>
+        <field name="res_model">hub.project.refuse.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="hub_refuse_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
