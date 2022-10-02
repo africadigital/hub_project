@@ -6,12 +6,12 @@
 ========================================-->
     <data>
         <!--=======STATE DRAFT SEND EMAIL=========-->
-        <record id="email_template_chief" model="mail.template">
+        <record id="email_template_daf" model="mail.template">
             <field name="name">Fiche projet: Validation chef de projet</field>
             <field name="model_id" ref="hub_project.model_hub_project"/>
             <field name="subject">Fiche projet {{object.name}} en attente de validation</field>
             <field name="email_from">{{object.company_id.email}}</field>
-            <field name="email_to">{{object.project_manager_id.login or ""}}</field>
+            <field name="email_to">{{object.hub_daf_id.login or ""}}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="xml">
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tbody><tr><td align="center">

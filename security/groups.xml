@@ -13,8 +13,8 @@
         <field name="category_id" ref="module_category_hub_project"/>
     </record>
 
-    <record id="group_chief_project" model="res.groups">
-        <field name="name">Chef projet</field>
+    <record id="group_daf" model="res.groups">
+        <field name="name">DAF</field>
         <field name="category_id" ref="module_category_hub_project"/>
         <field name="implied_ids" eval="[(4, ref('hub_project.group_hub_project_user'))]"/>
     </record>

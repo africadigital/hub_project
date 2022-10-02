@@ -16,7 +16,7 @@ class HubProject (models.Model):
     supervisor_id = fields.Many2one(comodel_name="hr.employee", string="Superviseur", required=False,readonly=True, states={'draft': [('readonly', False)]})
     company_id = fields.Many2one('res.company', 'Company', readonly=True, required=True, index=True, default=lambda self: self.env.company)
     currency_id = fields.Many2one('res.currency', readonly=True, default=lambda x: x.env.company.currency_id)
-    project_manager_id = fields.Many2one(comodel_name="res.users", string="Chef de projet", required=False,)
+    project_manager_id = fields.Many2one(comodel_name="hr.employee", string="Chef de projet", required=False,)
     partner_id = fields.Many2one(comodel_name="res.partner", string="Client", required=False, related="project_id.partner_id")
     analytic_account_id = fields.Many2one(comodel_name="account.analytic.account", string="Compte analytique", required=False, related="project_id.analytic_account_id")
     worksite_id = fields.Many2one(comodel_name="hub.worksite", string="Chantier", required=False,readonly=True, states={'draft': [('readonly', False)]})
@@ -31,8 +31,8 @@ class HubProject (models.Model):
     date_start = fields.Date(string="Date debut", required=True,readonly=True, states={'draft': [('readonly', False)]})
     date_end = fields.Date(string="Date fin", required=True,readonly=True, states={'draft': [('readonly', False)]})
     date = fields.Datetime(string="Date etablissement", default=lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'), required=True, readonly=True, states={'draft': [('readonly', False)]})
-    hub_chief_projet_id = fields.Many2one(comodel_name="res.users", string="Chef Projet", required=False,related="project_manager_id" )
-    date_chief = fields.Datetime(string="Date Validation", required=False, readonly=True ,copy=False)
+    hub_daf_id = fields.Many2one(comodel_name="res.users", string="DAF", readonly=True)
+    date_daf = fields.Datetime(string="Date Validation", required=False, readonly=True ,copy=False)
     hub_pmo_id = fields.Many2one(comodel_name="res.users", string="PMO", required=False, readonly=True,copy=False )
     date_pmo = fields.Datetime(string="Date Validation", required=False, readonly=True,copy=False )
     hub_dsd_id = fields.Many2one(comodel_name="res.users", string="DSD", required=False, readonly=True,copy=False )
@@ -40,7 +40,7 @@ class HubProject (models.Model):
     hub_manager_id = fields.Many2one(comodel_name="res.users", string="Directeur Général", required=False, readonly=True,copy=False )
     date_manager = fields.Datetime(string="Date Approbation", required=False, readonly=True,copy=False)
     state = fields.Selection(string="Etat",
-                             selection=[('draft', 'Nouveau'), ('project', 'Chef projet'), ('pmo_state', 'PMO'),('dsd_state', 'DSD'),('dg_state', 'DG'),('cancel', 'Annulée'),('done', 'Demande Approuvée')],
+                             selection=[('draft', 'Nouveau'), ('pmo_state', 'PMO'), ('daf_state', 'DAF'),('dsd_state', 'DBD'),('dg_state', 'DG'),('cancel', 'Annulée'),('done', 'Demande Approuvée')],
                              default='draft',tracking=1, readonly=True )
     employee_ids = fields.One2many(comodel_name="hub.employee.line", inverse_name="hub_id", string="Personnel Intervenants", readonly=True, required=True,states={'draft': [('readonly', False)]},copy=True)
     materials_ids = fields.One2many(comodel_name="hub.materials.line", inverse_name="hub_id", string="Besoins maretiels", readonly=True, required=True,states={'draft': [('readonly', False)]},copy=True)
@@ -66,6 +66,8 @@ class HubProject (models.Model):
             for user in validators:
                 if user.type == 'pmo':
                     vals['hub_pmo_id'] = user.user_id.id
+                if user.type == 'daf':
+                    vals['hub_daf_id'] = user.user_id.id
                 if user.type == 'dsd':
                     vals['hub_dsd_id'] = user.user_id.id
                 if user.type == 'dg':
@@ -95,7 +97,7 @@ class HubProject (models.Model):
     def _analytic_move(self):
         for rec in self :
             self.env['account.analytic.line'].create({
-                'name': rec.name + '-' + rec.project_id.name,
+                'name': rec.name + ' - ' + rec.project_id.name,
                 'account_id': rec.analytic_account_id.id,
                 'ref': rec.name,
                 'amount': -1*rec.amount_total,
@@ -107,24 +109,25 @@ class HubProject (models.Model):
         for p in self:
             if p.state == 'draft':
                 # Send email Manager Project
-                template_ids = self.env.ref('hub_project.email_template_chief').id
-                email_template_obj.browse(template_ids).with_context(**template_ctx).send_mail(self.id, force_send=True)
-                p.state = "project"
-            elif p.state == 'project':
-                if p.hub_pmo_id.id != self._uid:
-                    raise ValidationError("Vous n'êtes pas autorisé à valider cette fiche ! Merci de contacter l'Administrateur en cas d'erreur.")
+
                 template_ids = self.env.ref('hub_project.email_template_pmo').id
                 email_template_obj.browse(template_ids).with_context(**template_ctx).send_mail(self.id, force_send=True)
-                p.write({'state': 'pmo_state', 'date_chief': time.strftime('%Y-%m-%d %H:%M:%S')})
-
+                p.state = "pmo_state"
             elif p.state == 'pmo_state':
-                # Send email DSD
-                if p.hub_dsd_id.id != self._uid:
+                if p.hub_pmo_id.id != self._uid:
+                    raise ValidationError("Vous n'êtes pas autorisé à valider cette fiche ! Merci de contacter l'Administrateur en cas d'erreur.")
+                template_ids = self.env.ref('hub_project.email_template_daf').id
+                email_template_obj.browse(template_ids).with_context(**template_ctx).send_mail(self.id, force_send=True)
+                p.write({'state': 'daf_state', 'date_pmo': time.strftime('%Y-%m-%d %H:%M:%S')})
+
+            elif p.state == 'daf_state':
+                # Send email DAF
+                if p.hub_daf_id.id != self._uid:
                     raise ValidationError(
                         "Vous n'êtes pas autorisé à valider cette fiche ! Merci de contacter l'Administrateur en cas d'erreur.")
                 template_ids = self.env.ref('hub_project.email_template_dsd').id
                 email_template_obj.browse(template_ids).with_context(**template_ctx).send_mail(self.id, force_send=True)
-                p.write({'state': 'dsd_state', 'date_pmo': time.strftime('%Y-%m-%d %H:%M:%S')})
+                p.write({'state': 'dsd_state', 'date_daf': time.strftime('%Y-%m-%d %H:%M:%S')})
 
             elif p.state == 'dsd_state':
                 # Send email General Manager

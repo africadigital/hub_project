@@ -8,7 +8,7 @@ class HubValidator(models.Model):
     _description = 'Hub Validateurs'
 
     user_id = fields.Many2one(comodel_name="res.users", string="", required=True,)
-    type = fields.Selection(string="Type validation", selection=[('pmo', 'PMO'), ('dsd', 'DSD'),('dg', 'Directeur Général')], required=True, )
+    type = fields.Selection(string="Type validation", selection=[('pmo', 'PMO'),('daf', 'DAF'), ('dsd', 'DBD'),('dg', 'Directeur Général')], required=True, )
     email = fields.Char(string="Email", required=False,related="user_id.login")
 
     # =======================================

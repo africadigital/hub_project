@@ -9,14 +9,14 @@
                 <form string="Fiche Projet">
                     <header>
                         <button name="action_submit" string="Soumettre" icon="fa-send" class="oe_highlight" states="draft" type="object"/>
-                        <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="project" type="object" groups="hub_project.group_chief_project"/>
+                        <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="daf_state" type="object" groups="hub_project.group_daf"/>
                         <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="pmo_state" type="object" groups="hub_project.group_hub_pmo"/>
                         <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="dsd_state" type="object" groups="hub_project.group_hub_dsd"/>
                         <button name="action_submit" string="Approuver" icon="fa-check-circle" class="oe_highlight" states="dg_state" type="object" groups="hub_project.group_hub_manager"/>
                         <button name="action_draft" string="Mettre en brouillon" class="oe_highlight" states="cancel" type="object"/>
-                        <button name="%(hub_project.refuse_wizard_action)d" states="project,pmo_state,dsd_state,dg_state"  string="Refuser" type="action" groups="hub_project.group_chief_project,ub_project.group_hub_pmo,hub_project.group_hub_dsd,hub_project.group_hub_manager" data-hotkey="x" />
+                        <button name="%(hub_project.refuse_wizard_action)d" states="daf_state,pmo_state,dsd_state,dg_state"  string="Refuser" type="action" groups="hub_project.group_chief_project,ub_project.group_hub_pmo,hub_project.group_hub_dsd,hub_project.group_hub_manager" data-hotkey="x" />
 
-                        <field name="state" statusbar_visible="draft,project,pmo_state,dsd_state,dg_state,done" widget="statusbar"/>
+                        <field name="state" statusbar_visible="draft,pmo_state,daf_state,dsd_state,dg_state,done" widget="statusbar"/>
                     </header>
 
                     <sheet>
@@ -57,7 +57,6 @@
                                  <field name="create_date" string="Date création"/>
                                  <field name="company_id" string="Societé" invisible="0"/>
                                  <field name="currency_id" string="Devise" invisible="1"/>
-                                 <field name="url" invisible="1" />
                             </group>
                         </group>
                         <group>
@@ -129,17 +128,18 @@
                             </page>
                             <page string="Validateurs">
                                 <group>
-                                    <group string="Validation chef de projet">
-                                        <field name="hub_chief_projet_id"/>
-                                        <field name="date_chief"/>
-                                    </group>
+
                                     <group string="Validation PMO">
                                         <field name="hub_pmo_id"/>
                                         <field name="date_pmo"/>
                                     </group>
+                                    <group string="Validation DAF">
+                                        <field name="hub_daf_id"/>
+                                        <field name="date_daf"/>
+                                    </group>
                                 </group>
                                 <group>
-                                    <group string="Validation DSD">
+                                    <group string="Validation DBD">
                                         <field name="hub_dsd_id"/>
                                         <field name="date_dsd"/>
                                     </group>
@@ -182,7 +182,7 @@
                     <field name="amount_total" optional="show" />
                     <field name="zone" optional="hide"/>
                     <field name="locality_id" optional="hide"/>
-                    <field name="state" widget="badge" decoration-success="state == 'done'" decoration-primary="state == 'pmo'" decoration-danger="state == 'dsd'" decoration-info="state == 'project'"/>
+                    <field name="state" widget="badge" decoration-success="state == 'done'" decoration-primary="state == 'pmo_state'" decoration-danger="state == 'dsd_state'" decoration-warning="state == 'dg_state'" decoration-info="state == 'daf_state'"/>
 
                 </tree>
             </field>
@@ -288,7 +288,7 @@
                                         <field name="activity_ids" widget="kanban_activity"/>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="project_manager_id" widget="many2one_avatar_user"/>
+                                        <field name="project_manager_id"/>
                                     </div>
                                 </div>
                             </div>
@@ -352,7 +352,7 @@
         <record id="locality_act_window" model="ir.actions.act_window">
             <field name="name">Localité</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">hub.worksite</field>
+            <field name="res_model">hub.locality</field>
             <field name="view_mode">tree</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
