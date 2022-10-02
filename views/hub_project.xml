@@ -14,7 +14,7 @@
                         <button name="action_submit" string="Valider" icon="fa-check" class="oe_highlight" states="dsd_state" type="object" groups="hub_project.group_hub_dsd"/>
                         <button name="action_submit" string="Approuver" icon="fa-check-circle" class="oe_highlight" states="dg_state" type="object" groups="hub_project.group_hub_manager"/>
                         <button name="action_draft" string="Mettre en brouillon" class="oe_highlight" states="cancel" type="object"/>
-                        <button name="%(hub_project.refuse_wizard_action)d" states="daf_state,pmo_state,dsd_state,dg_state"  string="Refuser" type="action" groups="hub_project.group_chief_project,ub_project.group_hub_pmo,hub_project.group_hub_dsd,hub_project.group_hub_manager" data-hotkey="x" />
+                        <button name="%(hub_project.refuse_wizard_action)d" states="daf_state,pmo_state,dsd_state,dg_state"  string="Refuser" type="action" groups="hub_project.group_daf,ub_project.group_hub_pmo,hub_project.group_hub_dsd,hub_project.group_hub_manager" data-hotkey="x" />
 
                         <field name="state" statusbar_visible="draft,pmo_state,daf_state,dsd_state,dg_state,done" widget="statusbar"/>
                     </header>
@@ -140,7 +140,7 @@
                                 </group>
                                 <group>
                                     <group string="Validation DBD">
-                                        <field name="hub_dsd_id"/>
+                                        <field name="hub_dsd_id" string="DBD"/>
                                         <field name="date_dsd"/>
                                     </group>
                                     <group string="Approbation Direction Générale">
