@@ -55,11 +55,7 @@ class HubProject (models.Model):
     #=======================================
     @api.model
     def create(self, vals):
-        # if not vals.get('employee_ids'):
-        #     raise ValidationError("Veuillez renseigner le personnel intervenant ")
-        #
-        # if not vals.get('materials_ids'):
-        #     raise ValidationError("Veuillez renseigner les besoins en materiels ")
+       
 
         validators = self.env['hub.validator'].search([])
         if validators :
