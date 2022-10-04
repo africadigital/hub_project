@@ -35,7 +35,7 @@ class HubProject (models.Model):
     date_daf = fields.Datetime(string="Date Validation", required=False, readonly=True ,copy=False)
     hub_pmo_id = fields.Many2one(comodel_name="res.users", string="PMO", required=False, readonly=True,copy=False )
     date_pmo = fields.Datetime(string="Date Validation", required=False, readonly=True,copy=False )
-    hub_dsd_id = fields.Many2one(comodel_name="res.users", string="DSD", required=False, readonly=True,copy=False )
+    hub_dsd_id = fields.Many2one(comodel_name="res.users", string="DBD", required=False, readonly=True,copy=False )
     date_dsd = fields.Datetime(string="Date Validation", required=False,  readonly=True,copy=False)
     hub_manager_id = fields.Many2one(comodel_name="res.users", string="Directeur Général", required=False, readonly=True,copy=False )
     date_manager = fields.Datetime(string="Date Approbation", required=False, readonly=True,copy=False)
@@ -131,18 +131,22 @@ class HubProject (models.Model):
 
             elif p.state == 'dsd_state':
                 # Send email General Manager
-                if p.hub_manager_id.id != self._uid:
+                if p.hub_dsd_id.id != self._uid:
                     raise ValidationError(
                         "Vous n'êtes pas autorisé à valider cette fiche ! Merci de contacter l'Administrateur en cas d'erreur.")
 
                 template_ids = self.env.ref('hub_project.email_template_dg').id
                 email_template_obj.browse(template_ids).with_context(**template_ctx).send_mail(self.id, force_send=True)
-                # Move analytic budget
-                p._analytic_move()
+
                 p.write({'state': 'dg_state', 'date_dsd': time.strftime('%Y-%m-%d %H:%M:%S')})
 
             elif p.state == 'dg_state':
                 # Send email Applicant pay validate
+                if p.hub_manager_id.id != self._uid:
+                    raise ValidationError(
+                        "Vous n'êtes pas autorisé à valider cette fiche ! Merci de contacter l'Administrateur en cas d'erreur.")
+                # Move analytic budget
+                p._analytic_move()
                 template_ids = self.env.ref('hub_project.email_template_applicant').id
                 email_template_obj.browse(template_ids).send_mail(self.id, force_send=True)
                 p.write({'state': 'done', 'date_manager': time.strftime('%Y-%m-%d %H:%M:%S')})
