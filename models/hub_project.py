@@ -252,4 +252,4 @@ class HubSupplyLine(models.Model):
     @api.depends('qty', 'price')
     def _compute_subtotal(self):
         for rec in self:
-            rec.subtotal = rec.qty * rec.price
+            rec.subtotal = rec.qty * rec.price       
